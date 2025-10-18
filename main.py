@@ -56,9 +56,31 @@ def guardar_actividades(actividades):
 
 
 def enviar_correo(nuevas):
-    # (contenido de la función)
-    print("Saltando envío de correo por prueba:", nuevas)
-    return
+    api_key = os.getenv("BREVO_API_KEY")
+    if not api_key:
+        print("⚠️ No se configuró BREVO_API_KEY. No se enviará correo.")
+        return
+
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "accept": "application/json",
+        "api-key": api_key,
+        "content-type": "application/json"
+    }
+
+    data = {
+        "sender": {"name": "Escaramuza Bot", "email": "escaramuzascrap@gmail.com"},
+        "to": [{"email": "santimar200404@gmail.com"}],
+        "subject": "🆕 Nuevas actividades en Escaramuza",
+        "textContent": "Se han publicado nuevas actividades:\n\n" + "\n".join(nuevas)
+                       + "\n\n👉 https://escaramuza.com.uy/agenda/actividades-en-escaramuza"
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    if response.status_code == 201:
+        print("📧 Correo enviado con éxito vía Brevo.")
+    else:
+        print(f"❌ Error al enviar correo: {response.text}")
 
 def main():
     print("Revisando nuevas actividades...")
