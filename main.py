@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 def obtener_actividades():
     try:
-        r = requests.get(URL, timeout=10)
+        r = requests.get(URL, timeout=5)
         r.raise_for_status()
         soup = BeautifulSoup(r.text, "html.parser")
         actividades = [
@@ -121,8 +121,11 @@ def home():
 
 @app.route("/check")
 def check():
-    main()
-    return "✅ Revisión completada. Consulta los logs para ver el resultado."
+    try:
+        result = main()
+        return "✅ Revisión completada correctamente."
+    except Exception as e:
+        return f"❌ Error al ejecutar revisión: {e}"
 
 
 if __name__ == "__main__":
