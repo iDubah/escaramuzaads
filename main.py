@@ -55,16 +55,16 @@ def guardar_actividades(actividades):
         json.dump(actividades, f, ensure_ascii=False, indent=2)
 
 
-def enviar_correo(nuevas):
-    if not CONTRASENA:
-        print(
-            "⚠️  No se ha configurado la contraseña de email (EMAIL_PASSWORD). No se enviará correo."
-        )
-        return
+# def enviar_correo(nuevas):
+#     if not CONTRASENA:
+#         print(
+#             "⚠️  No se ha configurado la contraseña de email (EMAIL_PASSWORD). No se enviará correo."
+#         )
+#         return
 
-    asunto = "🆕 Nuevas actividades en Escaramuza"
-    cuerpo = "Se han publicado nuevas actividades:\n\n" + "\n".join(
-        nuevas) + "\n\n👉 " + URL
+#     asunto = "🆕 Nuevas actividades en Escaramuza"
+#     cuerpo = "Se han publicado nuevas actividades:\n\n" + "\n".join(
+#         nuevas) + "\n\n👉 " + URL
 
     msg = MIMEMultipart()
     msg["From"] = EMAIL_EMISOR
