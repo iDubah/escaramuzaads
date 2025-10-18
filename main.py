@@ -55,42 +55,18 @@ def guardar_actividades(actividades):
         json.dump(actividades, f, ensure_ascii=False, indent=2)
 
 
-# def enviar_correo(nuevas):
-#     if not CONTRASENA:
-#         print(
-#             "⚠️  No se ha configurado la contraseña de email (EMAIL_PASSWORD). No se enviará correo."
-#         )
-#         return
-
-#     asunto = "🆕 Nuevas actividades en Escaramuza"
-#     cuerpo = "Se han publicado nuevas actividades:\n\n" + "\n".join(
-#         nuevas) + "\n\n👉 " + URL
-
-    msg = MIMEMultipart()
-    msg["From"] = EMAIL_EMISOR
-    msg["To"] = EMAIL_RECEPTOR
-    msg["Subject"] = asunto
-    msg.attach(MIMEText(cuerpo, "plain"))
-
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(EMAIL_EMISOR, CONTRASENA)
-        server.send_message(msg)
-
-    print("Correo enviado con éxito.")
-
+def enviar_correo(nuevas):
+    # (contenido de la función)
+    print("Saltando envío de correo por prueba:", nuevas)
+    return
 
 def main():
     print("Revisando nuevas actividades...")
     actuales = obtener_actividades()
-
     if not actuales:
-        print(
-            "⚠️  No se pudieron obtener actividades. Se mantendrá el registro anterior."
-        )
+        print("⚠️  No se pudieron obtener actividades.")
         return
-
     previas = cargar_previas()
-
     nuevas = [a for a in actuales if a not in previas]
     if nuevas:
         print("¡Nuevas actividades detectadas!", nuevas)
@@ -100,6 +76,13 @@ def main():
         print("Sin novedades.")
         guardar_actividades(actuales)
 
+@app.route("/check")
+def check():
+    try:
+        main()
+        return "✅ Revisión completada correctamente."
+    except Exception as e:
+        return f"❌ Error al ejecutar revisión: {e}"
 
 def revisar_y_enviar():
     actuales = obtener_actividades()
@@ -118,14 +101,6 @@ def revisar_y_enviar():
 def home():
     return "Servidor activo. Usa /check para forzar revisión."
 
-
-@app.route("/check")
-def check():
-    try:
-        result = main()
-        return "✅ Revisión completada correctamente."
-    except Exception as e:
-        return f"❌ Error al ejecutar revisión: {e}"
 
 
 if __name__ == "__main__":
