@@ -45,8 +45,15 @@ def obtener_actividades():
 
 def cargar_previas():
     if os.path.exists(ARCHIVO_DATOS):
-        with open(ARCHIVO_DATOS, "r", encoding="utf-8") as f:
-            return json.load(f)
+        try:
+            with open(ARCHIVO_DATOS, "r", encoding="utf-8") as f:
+                contenido = f.read().strip()
+                if not contenido:
+                    return []
+                return json.loads(contenido)
+        except (json.JSONDecodeError, ValueError):
+            print("⚠️ Archivo JSON dañado o vacío. Se reiniciará.")
+            return []
     return []
 
 
